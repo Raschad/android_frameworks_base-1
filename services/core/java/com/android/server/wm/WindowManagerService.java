@@ -7869,6 +7869,11 @@ public class WindowManagerService extends IWindowManager.Stub
 
     private void handleTapOutsideTask(DisplayContent displayContent, int x, int y) {
         int taskId = -1;
+
+            if (mService.isGestureButtonEnabled() && mService.isGestureButtonRegion(x, y)) {
+                return;
+            }
+
         synchronized (mWindowMap) {
             final Task task = displayContent.findTaskForControlPoint(x, y);
             if (task != null) {
@@ -11906,5 +11911,15 @@ public class WindowManagerService extends IWindowManager.Stub
 
     private boolean judgeSingleHandSwitchBySize() {
         return mContext.getResources().getBoolean(com.android.internal.R.bool.single_hand_mode);
+    }
+
+    @Override
+    public boolean isGestureButtonEnabled() {
+        return this.mPolicy.isGestureButtonEnabled();
+    }
+
+    @Override
+    public boolean isGestureButtonRegion(int i, int i2) {
+        return this.mPolicy.isGestureButtonRegion(i, i2);
     }
 }

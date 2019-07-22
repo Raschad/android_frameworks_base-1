@@ -442,4 +442,8 @@ interface IWindowManager
      * Remove the input consumer for wallpaper events.
      */
     void removeWallpaperInputConsumer();
+
+    boolean isGestureButtonEnabled();
+
+    boolean isGestureButtonRegion(int i, int i2);
 }
