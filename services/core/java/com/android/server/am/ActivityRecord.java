@@ -469,10 +469,6 @@ final class ActivityRecord {
     }
 
     void scheduleMultiWindowModeChanged() {
-        if (service.mWindowManager.isGestureButtonEnabled()) {
-            return;
-        }
-
         if (task == null || task.stack == null || app == null || app.thread == null) {
             return;
         }

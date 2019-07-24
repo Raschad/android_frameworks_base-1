@@ -3710,16 +3710,6 @@ public final class Settings {
          public static final String VOLUME_KEY_CURSOR_CONTROL = "volume_key_cursor_control";
 
         /**
-         * @hide
-         */
-        public static final String OMNI_USE_BOTTOM_GESTURE_NAVIGATION =
-                "use_bottom_gesture_navigation";
-
-        /** @hide */
-        private static final Validator OMNI_USE_BOTTOM_GESTURE_NAVIGATION_VALIDATOR =
-                BOOLEAN_VALIDATOR;
-
-        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -3773,8 +3763,7 @@ public final class Settings {
             RINGTONE,
             LOCK_TO_APP_ENABLED,
             NOTIFICATION_SOUND,
-            ACCELEROMETER_ROTATION,
-            OMNI_USE_BOTTOM_GESTURE_NAVIGATION
+            ACCELEROMETER_ROTATION
         };
 
         /**
@@ -3874,7 +3863,6 @@ public final class Settings {
             PRIVATE_SETTINGS.add(POINTER_SPEED);
             PRIVATE_SETTINGS.add(LOCK_TO_APP_ENABLED);
             PRIVATE_SETTINGS.add(EGG_MODE);
-            PRIVATE_SETTINGS.add(OMNI_USE_BOTTOM_GESTURE_NAVIGATION);
         }
 
         /**
@@ -3952,8 +3940,6 @@ public final class Settings {
             VALIDATORS.put(WIFI_STATIC_NETMASK, WIFI_STATIC_NETMASK_VALIDATOR);
             VALIDATORS.put(WIFI_STATIC_DNS1, WIFI_STATIC_DNS1_VALIDATOR);
             VALIDATORS.put(WIFI_STATIC_DNS2, WIFI_STATIC_DNS2_VALIDATOR);
-            VALIDATORS.put(OMNI_USE_BOTTOM_GESTURE_NAVIGATION,
-                    OMNI_USE_BOTTOM_GESTURE_NAVIGATION_VALIDATOR);
         }
 
         /**

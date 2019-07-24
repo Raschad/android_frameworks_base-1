@@ -139,11 +139,6 @@ public class ActionUtils {
         return null;
     }
 
-    public static void sendKeycode(int keycode) {
-        final Handler handler = new Handler(Looper.getMainLooper());
-        sendKeycode(keycode, handler);
-    }
-
     private static String resolveCurrentLauncherPackage(Context context, int userId) {
         final Intent launcherIntent = new Intent(Intent.ACTION_MAIN)
                 .addCategory(Intent.CATEGORY_HOME);
