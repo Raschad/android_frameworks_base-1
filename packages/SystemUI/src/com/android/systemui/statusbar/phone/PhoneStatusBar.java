@@ -207,6 +207,7 @@ import com.android.systemui.statusbar.policy.SecurityControllerImpl;
 import com.android.systemui.statusbar.policy.SuControllerImpl;
 import com.android.systemui.statusbar.policy.UserInfoController;
 import com.android.systemui.statusbar.policy.UserSwitcherController;
+import com.android.systemui.statusbar.screen_gestures.ScreenGesturesController;
 import com.android.systemui.statusbar.policy.WeatherControllerImpl;
 import com.android.systemui.statusbar.policy.ZenModeController;
 import com.android.systemui.statusbar.stack.NotificationStackScrollLayout;
@@ -307,6 +308,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
      * an update.
      */
     private static final int REMOTE_INPUT_KEPT_ENTRY_AUTO_CANCEL_DELAY = 200;
+
+    private static final String EDGE_GESTURES_ENABLED =
+            Settings.Secure.EDGE_GESTURES_ENABLED;
 
     /**
      * Never let the alpha become zero for surfaces that draw with SRC - otherwise the RenderNode
@@ -429,6 +433,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     private int mStatusBarHeaderHeight;
 
+    // Full Screen Gestures
+    protected ScreenGesturesController gesturesController;
+    private boolean mEdgeGesturesEnabled;
+
     // the tracker view
     int mTrackingPosition; // the position of the top of the tracking view.
 
@@ -494,6 +502,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             CurrentUserTracker userTracker = new CurrentUserTracker(mContext) {
                 @Override
                 public void onUserSwitched(int newUserId) {
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.EDGE_GESTURES_ENABLED), false, this, UserHandle.USER_ALL);
                     update();
                 }
             };
@@ -501,9 +511,14 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
 
         @Override
-        public void onChange(boolean selfChange) {
+        public void onChange(boolean selfChange, Uri uri) {
             super.onChange(selfChange);
-            update();
+            } else if (uri.equals(Settings.Secure.getUriFor(
+                    Settings.Secure.EDGE_GESTURES_ENABLED))) {
+                updateEdgeGestures();
+        
+        public void update() {
+            updateEdgeGestures();
         }
 
         private void update() {
@@ -4741,6 +4756,21 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mStackScroller.setActivatedChild(null);
         if (activatedChild != null) {
             activatedChild.makeInactive(false /* animate */);
+        }
+    }
+
+    public void updateEdgeGestures() {
+        Log.d(TAG, "updateEdgeGestures: Updating edge gestures");
+        boolean enabled = Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                Settings.Secure.EDGE_GESTURES_ENABLED, 0, mCurrentUserId) == 1;
+        if (enabled) {
+            if (gesturesController == null) {
+                gesturesController = new ScreenGesturesController(mContext, mWindowManager, this);
+            }
+            gesturesController.reorient();
+        } else if (!enabled && gesturesController != null) {
+            gesturesController.stop();
+            gesturesController = null;
         }
     }
 

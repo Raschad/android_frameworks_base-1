@@ -112,4 +112,9 @@
 
     <!-- global actions (zen mode buttons) -->
     <java-symbol type="id" name="option4" />
+
+    <!-- EdgeGesture service -->
+    <java-symbol type="dimen" name="edge_gesture_trigger_distance" />
+    <java-symbol type="dimen" name="edge_gesture_perpendicular_distance" />
+    <java-symbol type="dimen" name="edge_gesture_trigger_thickness" />
 </resources>
