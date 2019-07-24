@@ -3724,11 +3724,14 @@ public final class ViewRootImpl implements ViewParent,
                 handleHighTextContrastChange(msg.arg1 != 0);
             } break;
             case MSG_GESTURE_MOTION_DOWN: {
-                for (MotionEvent me : ViewRootImpl.this.mBackupEventList) {
+                int k = 0;
+                while (k < ViewRootImpl.this.mBackupEventList.size()) {
                     try {
-                        boolean ishandled = ViewRootImpl.this.mView.dispatchPointerEvent(me);
+                        boolean ishandled = ViewRootImpl.this.mView.dispatchPointerEvent(
+                                (MotionEvent) ViewRootImpl.this.mBackupEventList.get(k));
+                        k++;
                     } catch (NullPointerException e) {
-                        break;
+                        Log.e(ViewRootImpl.TAG, "mView does not exist, discard points. " + e);
                     }
                 }
             } break;
@@ -4492,6 +4495,8 @@ public final class ViewRootImpl implements ViewParent,
                     }
 
                     Message msg;
+                    int i2;
+                    boolean ishandled;
                     switch (action) {
                         case MotionEvent.ACTION_DOWN:
                             mCheckForGestureButton = false;
@@ -4533,11 +4538,14 @@ public final class ViewRootImpl implements ViewParent,
                                                 ViewRootImpl.MSG_GESTURE_MOTION_DOWN);
                                     }
                                     if (!mQueueMotionConsumed) {
-                                        for (MotionEvent me : mBackupEventList) {
+                                        i2 = 0;
+                                        while (i2 < mBackupEventList.size()) {
                                             try {
-                                                mView.dispatchPointerEvent(me);
+                                                ishandled = mView.dispatchPointerEvent(
+                                                        (MotionEvent) mBackupEventList.get(i2));
+                                                i2++;
                                             } catch (NullPointerException e) {
-                                                break;
+                                                Log.e(ViewRootImpl.TAG, "discard points" + e);
                                             }
                                         }
                                     }
@@ -4554,10 +4562,10 @@ public final class ViewRootImpl implements ViewParent,
                         case MotionEvent.ACTION_MOVE:
                             if (mCheckForGestureButton) {
                                 mBackupEventList.add(MotionEvent.obtain(event));
-                                boolean swipeTimeTooSlow = false;
+                                boolean swipeTimeoSlow = false;
                                 boolean reachDistance = false;
                                 if (event.getEventTime() - event.getDownTime() > 400) {
-                                    swipeTimeTooSlow = true;
+                                    swipeTimeoSlow = true;
                                 }
                                 float threshold = ViewRootImpl.GESTURE_KEY_DISTANCE_THRESHOLD;
                                 if (rotation == 0 || rotation == 2) {
@@ -4579,18 +4587,21 @@ public final class ViewRootImpl implements ViewParent,
 
                                     mCheckForGestureButton = false;
                                     mQueueMotionConsumed = true;
-                                } else if (swipeTimeTooSlow) {
+                                } else if (reachDistance || swipeTimeoSlow) {
                                     if (mHandler.hasMessages(
                                             ViewRootImpl.MSG_GESTURE_MOTION_DOWN)) {
                                         mHandler.removeMessages(
                                                 ViewRootImpl.MSG_GESTURE_MOTION_DOWN);
                                     }
                                     if (!mQueueMotionConsumed) {
-                                        for (MotionEvent me : mBackupEventList) {
+                                        i2 = 0;
+                                        while (i2 < mBackupEventList.size()) {
                                             try {
-                                                mView.dispatchPointerEvent(me);
+                                                ishandled = mView.dispatchPointerEvent(
+                                                        (MotionEvent) mBackupEventList.get(i2));
+                                                i2++;
                                             } catch (NullPointerException e2) {
-                                                break;
+                                                Log.e(ViewRootImpl.TAG, "discard points" + e2);
                                             }
                                         }
                                     }
